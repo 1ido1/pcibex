@@ -14,22 +14,20 @@
 .handle, .handle-label, .scale-label {
     font-family: sans-serif;
     position: absolute;
-    margin: 2em;
-
 }
 .handle {
     width: 30px;
     height: 30px;
     cursor: default;
     font-face: bold;
-    border: 1px solid Ivory;
+    border: 1px solid white;
 }
 
 .button {
     width: 7em;
     height: 1.5em;
     background: #26396B;
-    color: Ivory;
+    color: white;
     font-family: sans-serif;
     font-weight: bold;
     cursor: pointer;

@@ -36,7 +36,7 @@ const askQuestion = (successCallback, failureCallback, waitTime) => (row) => (ro
     )),
 
   // Wait for feedback and to display which option was selected
-  newTimer("wait", waitTime)
+  newTimer("timer_wait2", waitTime)
     .start()
     .wait()
 ] : []);
@@ -58,7 +58,7 @@ const askTrialQuestion = askQuestion(
     // need to repeat the css code, unfortunately, because of the time that follows
     getText("answer_wrong").css("border-bottom", "5px solid lightCoral"),
     // Penalty for the wrong answer is waiting 1000 ms before continuing
-    newTimer("wait", 1000)
+    newTimer("timer_wait", 1000)
       .start()
       .wait()
   ],
@@ -278,7 +278,8 @@ Template("experiment.csv", row =>
     newTrial( "experiment-"+row.TYPE,
               newPrimer(),
            // Dashed sentence. Segmentation is marked by "*"
-           newController("SelfPacedReadingParadigmSentence", {s : row.SENTENCE, splitRegex: /\*/})
+          // newController("SelfPacedReadingParadigmSentence", {s : row.SENTENCE, splitRegex: /\*/})
+           newController("DashedSentence", {s : row.SENTENCE, mode: "speeded acceptability"})
            .center()
            .print()
            .log()
