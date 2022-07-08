@@ -115,7 +115,7 @@ newHtml("form",`<div dir="RTL" style="text-align: justify; direction: rtl; unico
         else getButton("go_to_info").disable()._runPromises();
     }) ).call() 
     ,
-    newButton("go_to_info",'<p style="font-family: David;"><strong>התחל ניסוי</strong></p>')
+    newButton("go_to_info",'<div style="font-family: David;"><strong>התחל ניסוי</strong></div>')
         .cssContainer({"direction": "rtl", "margin-top":"1em"})
         .disable()
         .print()
@@ -137,35 +137,39 @@ newTrial("participants",
     ,
     newText("participant_info_header", '<h1 dir="rtl" style="font-family: David; text-align: center;">שאלון פרטים אישיים</h1>').center()
     ,
-    newText("participant_info_sub_header", '<p dir="rtl" style="font-family: David;">.אנא ענה על השאלות הבאות. בשאלות שיש לצידן תשובות אפשריות, אנא סמן את התשובה המיטיבה לתאר את מצבך. בשאלות שאין לצידן אפשרויות תשובה, אנא השלם בהתאם</p>')
+    newText("participant_info_sub_header", '<div dir="rtl" style="font-family: David;">אנא ענה על השאלות הבאות. בשאלות שיש לצידן תשובות אפשריות, אנא סמן את התשובה המיטיבה לתאר את מצבך. בשאלות שאין לצידן אפשרויות תשובה, אנא השלם בהתאם.</div>')
     ,
-    newText('<p dir="rtl" style="font-family: David;">האם עברית היא שפת האם שלך?</p>')
+    newText('<div dir="rtl" style="font-family: David;">האם עברית היא שפת האם שלך?</div>')
         .cssContainer({"direction": "rtl"})
         .print()
     ,
-    newScale("input_hebrew",   "כן", "לא")
+    newScale("input_hebrew", '<div dir="rtl" style="font-family: David;">כן</div>', '<div dir="rtl" style="font-family: David;">לא</div>')
         .radio()
         .log()
         .labelsPosition("right")
         .cssContainer({"direction": "rtl"})
+        .callback( getText("errorage").remove(), getText("errorHebrew").remove(), getText("errorGender").remove(), getText("errorNative").remove() )
         .print()
-        .wait()
+    ,
+    newText('')
     ,
     // Other native languages
-    newText('<p dir="rtl" style="font-family: David;">האם את/ה דובר/ת שפות נוספות ברמת שפת אם?</p>')
+    newText('<div dir="rtl" style="font-family: David;">האם את/ה דובר/ת שפות נוספות ברמת שפת אם?</div>')
         .cssContainer({"direction": "rtl"})
         .print()
     ,
-    newScale("input_native",   "כן", "לא")
+    newScale("input_native", '<div dir="rtl" style="font-family: David;">כן</div>', '<div dir="rtl" style="font-family: David;">לא</div>')
         .radio()
         .labelsPosition("right")
         .log()
         .cssContainer({"direction": "rtl"})
+         .callback( getText("errorage").remove(), getText("errorHebrew").remove(), getText("errorGender").remove(), getText("errorNative").remove() )
         .print()
-        .wait()
+    ,
+    newText('')
     ,
     // Age
-    newText('<p dir="rtl" style="font-family: David;">מהו גילך?</p>')
+    newText('<div dir="rtl" style="font-family: David;">מהו גילך?</div>')
         .cssContainer({"direction": "rtl"})
         .print()
     ,
@@ -174,24 +178,25 @@ newTrial("participants",
         .log()
         .cssContainer({"direction": "rtl"})
         .print()
-        .wait()
+    ,
+     newText('')
     ,
     // Gender
-    newText('<p dir="rtl" style="font-family: David;">מה המין שלך?</p>')
+    newText('<div dir="rtl" style="font-family: David;">מה המין שלך?</div>')
         .cssContainer({"direction": "rtl"})
         .print()
     ,
-    newScale("input_gender",   "נקבה", "זכר", "אחר")
+    newScale("input_gender",   '<div dir="rtl" style="font-family: David;">נקבה</div>', '<div dir="rtl" style="font-family: David;">זכר</div>', '<div dir="rtl" style="font-family: David;">אחר</div>')
         .radio()
         .log()
         .cssContainer({"direction": "rtl"})
         .labelsPosition("right")
+        .callback( getText("errorage").remove(), getText("errorHebrew").remove(), getText("errorGender").remove(), getText("errorNative").remove() )
         .print()
-        .wait()
     ,
       // Clear error messages if the participant changes the input
     newKey("just for callback", "") 
-        .callback( getText("errorage").remove() )
+        .callback( getText("errorage").remove(), getText("errorHebrew").remove(), getText("errorGender").remove(), getText("errorNative").remove() )
     ,
     // Formatting text for error messages
     defaultText.color("Crimson").print()
@@ -203,15 +208,21 @@ newTrial("participants",
         // Check for participant ID and age input
         .wait(
              newFunction('dummy', ()=>true).test.is(true)
-                        // Age
+             // Age
             .and( getTextInput("input_age").test.text(/^\d+$/)
-                .failure( newText('errorage', "אנא כתוב את גילך שנית."), 
-                          getTextInput("input_age").text("")))  
+                .failure( newText('errorage', '<div dir="rtl" style="font-family: David;">אנא כתוב/כתבי את גילך שנית.</div>'), 
+                          getTextInput("input_age").text("")))
+             .and( getScale("input_hebrew").test.selected()
+                .failure( newText('errorHebrew', '<div dir="rtl" style="font-family: David;">אנא סמן/י האם עברית שפת אמך.</div>')))  
+             .and( getScale("input_gender").test.selected()
+                .failure( newText('errorGender', '<div dir="rtl" style="font-family: David;">אנא סמן/י את מינך.</div>'))) 
+             .and( getScale("input_native").test.selected()
+                .failure( newText('errorNative', '<div dir="rtl" style="font-family: David;">אנא סמן/י האם אתה דובר/ת שפות אם נוספות.</div>'))) 
         )
     ,
     // Store the texts from inputs into the Var elements
     getVar("HEBREW") .set( getScale("input_hebrew") ),
-    getVar("NATIVE") .set( getTextInput("input_native") ),
+    getVar("NATIVE") .set( getScale("input_native") ),
     getVar("AGE")    .set( getTextInput("input_age") ),
     getVar("GENDER") .set( getScale("input_gender") )
 );
@@ -246,7 +257,7 @@ Template("exercise.csv", row =>
 
 // Start experiment
 newTrial( "start_experiment" ,
-    newText("<h2>Jetzt beginnt der Hauptteil der Studie.</h2><p>Sie kriegen Feedback nur bei falscher Antwort.</p>")
+    newText("<h2>Jetzt beginnt der Hauptteil der Studie.</h2><div>Sie kriegen Feedback nur bei falscher Antwort.</div>")
         .print()
     ,
     newButton("go_to_experiment", "Experiment starten")
@@ -274,7 +285,7 @@ Template("experiment.csv", row =>
 
 // Final screen: explanation of the goal
 newTrial("end",
-    newText("<div class='fancy'><h2>Vielen Dank für die Teilnahme an unserer Studie!</h2></div><p>Um Ihre Vergütung zu bekommen, schicken Sie bitte diesen persönlichen Code an die Versuchsleiterin: <div class='fancy'><em>".concat(voucher, "</em></div></p>"))
+    newText("<div class='fancy'><h2>Vielen Dank für die Teilnahme an unserer Studie!</h2></div><div>Um Ihre Vergütung zu bekommen, schicken Sie bitte diesen persönlichen Code an die Versuchsleiterin: <div class='fancy'><em>".concat(voucher, "</em></div></div>"))
         .cssContainer({"margin-top":"1em", "margin-bottom":"1em"})
         .print()
     ,
