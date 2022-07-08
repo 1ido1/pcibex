@@ -106,17 +106,17 @@ newTrial("ethics",
         .cssContainer({"margin":"1em"})
         .print()
     ,
-newHtml("form", `<div class='fancy'><input name='consent' id='consent' type='checkbox'><label for='consent'>Ich bin mindestens 18 Jahre alt und erkläre mich damit einverstanden, an der Studie teilzunehmen. Ich habe die <em>Information für Probanden</em> gelesen und verstanden. Meine Teilnahme ist freiwillig. Ich weiß, dass ich die Möglichkeit habe, meine Teilnahme an dieser Studie jederzeit und ohne Angabe von Gründen abzubrechen, ohne dass mir daraus Nachteile entstehen. Ich erkläre, dass ich mit der im Rahmen der Studie erfolgten Aufzeichnung von Studiendaten und ihrer Verwendung in pseudo- bzw. anonymisierter Form einverstanden bin.</label></div>`)
-        .cssContainer({"margin":"1em"})
+newHtml("form",`<div dir="RTL" style="text-align: justify; direction: rtl; unicode-bidi: embed;"><span lang="HE" style="font-size: 11.0pt; font-family: 'David',sans-serif;"><input id="consent" name="consent" type="checkbox" /><span lang="HE" style="font-size: 11.0pt; font-family: 'David',sans-serif;">אני בן/בת 18 לפחות ומסכים/ה לקחת חלק במחקר הנוכחי. קראתי והבנתי את המידע לעיל. השתתפותי במחקר הינה בהתנדבות ואני מודע/ת לכך שיש לי אפשרות לפרוש ממחקר זה בכל עת. אני נותן/ת את הסמכתי לכך שנתוני המחקר ייקלטו ויעשה בהם שימוש באופן אנונימי כחלק ממחקר זה.</span><label for="consent">.</label></span></div>`)
+        .cssContainer({"direction": "rtl", "margin":"1em"})
         .print()
     ,
     newFunction( () => $("#consent").change( e=>{
         if (e.target.checked) getButton("go_to_info").enable()._runPromises();
         else getButton("go_to_info").disable()._runPromises();
-    }) ).call()
+    }) ).call() 
     ,
-    newButton("go_to_info", "Experiment starten")
-        .cssContainer({"margin":"1em"})
+    newButton("go_to_info",'<p style="font-family: David;"><strong>התחל ניסוי</strong></p>')
+        .cssContainer({"direction": "rtl", "margin-top":"1em"})
         .disable()
         .print()
         .wait()
@@ -135,76 +135,63 @@ newTrial("participants",
         .cssContainer({"margin-top":"1em", "margin-bottom":"1em"})
         .print()
     ,
-    newText("participant_info_header", "<div class='fancy'><h2>Zur Auswertung der Ergebnisse benötigen wir folgende Informationen.</h2><p>Sie werden streng anonym behandelt und eine spätere Zuordnung zu Ihnen wird nicht möglich sein.</p></div>")
+    newText("participant_info_header", '<h1 dir="rtl" style="font-family: David; text-align: center;">שאלון פרטים אישיים</h1>').center()
     ,
-    // Participant ID (6-place)
-    newText("participantID", "<b>Bitte tragen Sie Ihre Teilnehmer-ID ein.</b><br>(bitte Eintrag durch Eingabetaste bestätigen)")
+    newText("participant_info_sub_header", '<p dir="rtl" style="font-family: David;">.אנא ענה על השאלות הבאות. בשאלות שיש לצידן תשובות אפשריות, אנא סמן את התשובה המיטיבה לתאר את מצבך. בשאלות שאין לצידן אפשרויות תשובה, אנא השלם בהתאם</p>')
     ,
-    newTextInput("input_ID")
-        .length(6)
-        .log()
+    newText('<p dir="rtl" style="font-family: David;">האם עברית היא שפת האם שלך?</p>')
+        .cssContainer({"direction": "rtl"})
         .print()
-        .wait()
     ,
-    // German native speaker question
-    newText("<b>Ist Deutsch Ihre Muttersprache?</b>")
-    ,
-    newScale("input_german",   "ja", "nein")
+    newScale("input_hebrew",   "כן", "לא")
         .radio()
         .log()
         .labelsPosition("right")
-        .print()
-        .wait()
-    ,
-    // Federal state of origin
-    newText("<b>In welchem Bundesland wird Ihre Variante des Deutschen (bzw. Ihr Dialekt) hauptsächlich gesprochen?</b>")
-    ,
-    newDropDown("land", "(bitte auswählen)")
-        .add("Baden-Württemberg", "Bayern", "Berlin", "Brandenburg", "Bremen", "Hamburg", "Hessen", "Mecklenburg-Vorpommern", "Niedersachsen", "Nordrhein-Westfalen", "Rheinland-Pfal", "Saarland", "Sachsen", "Sachsen-Anhalt", "Schleswig-Holstein", "Thüringen", "nicht Deutschland, sondern Österreich", "nicht Deutschland, sondern Schweiz", "keines davon")
-        .log()
+        .cssContainer({"direction": "rtl"})
         .print()
         .wait()
     ,
     // Other native languages
-    newText("<b>Haben Sie andere Muttersprachen?</b><br>(bitte Eintrag durch Eingabetaste bestätigen)")
+    newText('<p dir="rtl" style="font-family: David;">האם את/ה דובר/ת שפות נוספות ברמת שפת אם?</p>')
+        .cssContainer({"direction": "rtl"})
+        .print()
     ,
-    newTextInput("input_native")
+    newScale("input_native",   "כן", "לא")
+        .radio()
+        .labelsPosition("right")
         .log()
+        .cssContainer({"direction": "rtl"})
         .print()
         .wait()
     ,
     // Age
-    newText("<b>Alter in Jahren</b><br>(bitte Eintrag durch Eingabetaste bestätigen)")
+    newText('<p dir="rtl" style="font-family: David;">מהו גילך?</p>')
+        .cssContainer({"direction": "rtl"})
+        .print()
     ,
     newTextInput("input_age")
         .length(2)
         .log()
+        .cssContainer({"direction": "rtl"})
         .print()
         .wait()
     ,
     // Gender
-    newText("<b>Geschlecht</b>")
+    newText('<p dir="rtl" style="font-family: David;">מה המין שלך?</p>')
+        .cssContainer({"direction": "rtl"})
+        .print()
     ,
-    newScale("input_gender",   "weiblich", "männlich", "divers")
+    newScale("input_gender",   "נקבה", "זכר", "אחר")
         .radio()
         .log()
+        .cssContainer({"direction": "rtl"})
         .labelsPosition("right")
         .print()
         .wait()
     ,
-    // Handedness
-    newText("<b>Händigkeit</b>")
-    ,
-    newScale("input_hand",   "rechts", "links", "beide")
-        .radio()
-        .log()
-        .labelsPosition("right")
-        .print()
-        .wait()
-    ,
-    // Clear error messages if the participant changes the input
+      // Clear error messages if the participant changes the input
     newKey("just for callback", "") 
-        .callback( getText("errorage").remove() , getText("errorID").remove() )
+        .callback( getText("errorage").remove() )
     ,
     // Formatting text for error messages
     defaultText.color("Crimson").print()
@@ -216,23 +203,17 @@ newTrial("participants",
         // Check for participant ID and age input
         .wait(
              newFunction('dummy', ()=>true).test.is(true)
-            // ID
-            .and( getTextInput("input_ID").testNot.text("")
-                .failure( newText('errorID', "Bitte tragen Sie Ihre Teilnehmer-ID ein. Diese haben Sie in einer E-Mail bekommen.") )
-            // Age
-            ).and( getTextInput("input_age").test.text(/^\d+$/)
-                .failure( newText('errorage', "Bitte tragen Sie Ihr Alter ein."), 
+                        // Age
+            .and( getTextInput("input_age").test.text(/^\d+$/)
+                .failure( newText('errorage', "אנא כתוב את גילך שנית."), 
                           getTextInput("input_age").text("")))  
         )
     ,
     // Store the texts from inputs into the Var elements
-    getVar("ID")     .set( getTextInput("input_ID") ),
-    getVar("GERMAN") .set( getScale("input_german") ),
-    getVar("LAND")   .set( getDropDown("land") ),
+    getVar("HEBREW") .set( getScale("input_hebrew") ),
     getVar("NATIVE") .set( getTextInput("input_native") ),
     getVar("AGE")    .set( getTextInput("input_age") ),
-    getVar("GENDER") .set( getScale("input_gender") ),
-    getVar("HAND")   .set( getScale("input_hand") )
+    getVar("GENDER") .set( getScale("input_gender") )
 );
 
 // Instructions
