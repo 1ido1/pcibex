@@ -202,9 +202,11 @@ newTrial("participants",
     defaultText.color("Crimson").print()
     ,
     // Continue. Only validate a click when ID and age information is input properly
-    newButton("weiter", "Weiter zur Instruktion")
-        .cssContainer({"margin-top":"1em", "margin-bottom":"1em"})
+    newButton("next", '<div style="font-family: David;"><strong>עבור להוראות הניסוי </strong></div>')
+        .cssContainer({"direction": "rtl", "margin-top":"1em"})
+        .disable()
         .print()
+        .wait()
         // Check for participant ID and age input
         .wait(
              newFunction('dummy', ()=>true).test.is(true)
