@@ -5,7 +5,7 @@ PennController.ResetPrefix(null); // Shorten command names (keep this line here)
 const voucher = b64_md5((Date.now() + Math.random()).toString()); // Voucher code generator
 
 // Optionally Inject a question into a trial
-const askQuestion = (successCallback, failureCallback, waitTime) => (row) => (row.QUESTION=="1" ? [
+const askQuestion = (successCallback, failureCallback, waitTime) => (row) => (true ? [
   newText( "answer_correct" , row.CORRECT ),
   newText( "answer_wrong" , row.WRONG ),
 
@@ -29,10 +29,10 @@ const askQuestion = (successCallback, failureCallback, waitTime) => (row) => (ro
     .wait()
     .test.selected( "answer_correct" )
     .success.apply(null, successCallback().concat(
-        [getText("answer_correct").css("border-bottom", "5px solid lightCoral")]
+        [getText("answer_correct").css("border-bottom", "5px solid black")]
     ))
     .failure.apply(null, failureCallback().concat(
-        [getText("answer_wrong").css("border-bottom", "5px solid lightCoral")]
+        [getText("answer_wrong").css("border-bottom", "5px solid black")]
     )),
 
   // Wait for feedback and to display which option was selected
@@ -42,26 +42,14 @@ const askQuestion = (successCallback, failureCallback, waitTime) => (row) => (ro
 ] : []);
 
 const askExerciseQuestion = askQuestion(
-  () => [newText("<b>Richtig!</b>").color("LightGreen").center().print()],
-  () => [newText("<b>Leider falsch!</b>").color("Crimson").center().print()],
+  () => [],
+  () => [],
   1000
 );
 
 const askTrialQuestion = askQuestion(
   () => [getVar("ACCURACY").set(v=>[...v,true])],
-  () => [
-    getVar("ACCURACY").set(v=>[...v,false]),
-    newText("<b>Leider falsch!</b>")
-      .color("Crimson")
-      .center()
-      .print(),
-    // need to repeat the css code, unfortunately, because of the time that follows
-    getText("answer_wrong").css("border-bottom", "5px solid lightCoral"),
-    // Penalty for the wrong answer is waiting 1000 ms before continuing
-    newTimer("timer_wait", 1000)
-      .start()
-      .wait()
-  ],
+  () => [getVar("ACCURACY").set(v=>[...v,false])],
   300
 );
 
@@ -204,9 +192,7 @@ newTrial("participants",
     // Continue. Only validate a click when ID and age information is input properly
     newButton("next", '<div style="font-family: David;"><strong>עבור להוראות הניסוי </strong></div>')
         .cssContainer({"direction": "rtl", "margin-top":"1em"})
-        .disable()
         .print()
-        .wait()
         // Check for participant ID and age input
         .wait(
              newFunction('dummy', ()=>true).test.is(true)
@@ -235,18 +221,17 @@ newTrial("instructions",
         .cssContainer({"margin":"1em"})
         .print()
         ,
-    newButton("go_to_exercise", "Übung starten")
+    newButton("go_to_exercise", '<div style="font-family: David;"><strong>התחל אימון</strong></div>')
         .cssContainer({"margin":"1em"})
         .print()
         .wait()
 );
-
 // Exercise
 Template("exercise.csv", row =>
   newTrial("exercise",
            newPrimer(),
            // Dashed sentence. Segmentation is marked by "*"
-           newController("SelfPacedReadingParadigmSentence", {s : row.SENTENCE, splitRegex: /\*/})
+           newController("DashedSentence", {s : row.SENTENCE, mode: "speeded acceptability", wordPauseTime: 50, wordTime: 375})
            .center()
            .print()
            .log()
@@ -272,13 +257,12 @@ Template("experiment.csv", row =>
     newTrial( "experiment-"+row.TYPE,
               newPrimer(),
            // Dashed sentence. Segmentation is marked by "*"
-          // newController("SelfPacedReadingParadigmSentence", {s : row.SENTENCE, splitRegex: /\*/})
-           newController("DashedSentence", {s : row.SENTENCE, mode: "speeded acceptability"})
+           newController("DashedSentence", {s : row.SENTENCE, mode: "speeded acceptability", wordPauseTime: 50, wordTime: 375}) 
            .center()
            .print()
            .log()
            .wait()
-           .remove(),
+           .remove(), 
            askTrialQuestion(row))
     .log( "list"      , row.LIST)
     .log( "item"      , row.ITEM)
