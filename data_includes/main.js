@@ -4,20 +4,23 @@ PennController.ResetPrefix(null); // Shorten command names (keep this line here)
 
 const voucher = b64_md5((Date.now() + Math.random()).toString()); // Voucher code generator
 
+formmater = (text) => '<div dir="rtl" style="font-family: David; text-align: right;">' + text + '</div>';
+
 // Optionally Inject a question into a trial
 const askQuestion = (successCallback, failureCallback, waitTime) => (row) => (true ? [
-  newText( "answer_correct" , row.CORRECT ),
-  newText( "answer_wrong" , row.WRONG ),
+  newText( "answer_correct" , formmater(row.CORRECT)),
+  newText( "answer_wrong" , formmater(row.WRONG)),
 
-  newCanvas("Canvas", 600, 100)
-    .center()
-    .add(   0 ,  0,  newText("Wer oder was wurde im Satz erwähnt?"))
-    .add(   0 , 50 , newText("1 =") )
-    .add( 300 , 50 , newText("2 =") )
-    .add(  40 , 50 , getText("answer_correct") )
-    .add( 340 , 50 , getText("answer_wrong") )
+  newCanvas("Canvas", 700, 100)
+    .add(  340 ,  0,  newText(formmater('לפי דעתך האם המשפט הוא משפט טוב או לא טוב?')).cssContainer({"direction": "rtl"}).print())
+    .add(  600 , 50 , newText(formmater('1 = ')).cssContainer({"direction": "rtl"}).print()) 
+    .add( 340 , 50 , newText(formmater('2 = ')).cssContainer({"direction": "rtl"}).print()) 
+    .add(  560 , 50 , getText("answer_correct").cssContainer({"direction": "rtl"}).print())
+    .add( 300 , 50 , getText("answer_wrong").cssContainer({"direction": "rtl"}).print()) 
+    .cssContainer({"direction": "rtl"})
+    .right()
     .print()
-  ,
+  , 
   // Shuffle the position of the answers. Answer keys are 1 for left and 2 for right
   newSelector("answer")
     .add( getText("answer_correct") , getText("answer_wrong") )
@@ -67,22 +70,16 @@ const newPrimer = () => [
 Header(
     // Declare global variables to store the participant's ID and demographic information
     newVar("ID").global(),
-    newVar("GERMAN").global(),
-    newVar("LAND").global(),
     newVar("NATIVE").global(),
     newVar("AGE").global(),
     newVar("GENDER").global(),
-    newVar("HAND").global(),
     newVar("ACCURACY", []).global()
 )
  // Add the particimant info to all trials' results lines
 .log( "id"     , getVar("ID") )
-.log( "german" , getVar("GERMAN") )
-.log( "land"   , getVar("LAND") )
 .log( "native" , getVar("NATIVE") )
 .log( "age"    , getVar("AGE") )
 .log( "gender" , getVar("GENDER") )
-.log( "hand"   , getVar("HAND") )
 .log( "code"   , voucher );
 
 // Sequence of events: consent to ethics statement required to start the experiment, participant information, instructions, exercise, transition screen, main experiment, result logging, and end screen.
@@ -103,7 +100,7 @@ newHtml("form",`<div dir="RTL" style="text-align: justify; direction: rtl; unico
         else getButton("go_to_info").disable()._runPromises();
     }) ).call() 
     ,
-    newButton("go_to_info",'<div style="font-family: David;"><strong>התחל ניסוי</strong></div>')
+    newButton("go_to_info",formmater('<strong>התחל ניסוי</strong>'))
         .cssContainer({"direction": "rtl", "margin-top":"1em"})
         .disable()
         .print()
@@ -125,13 +122,13 @@ newTrial("participants",
     ,
     newText("participant_info_header", '<h1 dir="rtl" style="font-family: David; text-align: center;">שאלון פרטים אישיים</h1>').center()
     ,
-    newText("participant_info_sub_header", '<div dir="rtl" style="font-family: David;">אנא ענה על השאלות הבאות. בשאלות שיש לצידן תשובות אפשריות, אנא סמן את התשובה המיטיבה לתאר את מצבך. בשאלות שאין לצידן אפשרויות תשובה, אנא השלם בהתאם.</div>')
+    newText("participant_info_sub_header", formmater('אנא ענה על השאלות הבאות. בשאלות שיש לצידן תשובות אפשריות, אנא סמן את התשובה המיטיבה לתאר את מצבך. בשאלות שאין לצידן אפשרויות תשובה, אנא השלם בהתאם.'))
     ,
-    newText('<div dir="rtl" style="font-family: David;">האם עברית היא שפת האם שלך?</div>')
+    newText(formmater('האם עברית היא שפת האם שלך?'))
         .cssContainer({"direction": "rtl"})
         .print()
     ,
-    newScale("input_hebrew", '<div dir="rtl" style="font-family: David;">כן</div>', '<div dir="rtl" style="font-family: David;">לא</div>')
+    newScale("input_hebrew", formmater('כן'), formmater('לא'))
         .radio()
         .log()
         .labelsPosition("right")
@@ -142,11 +139,11 @@ newTrial("participants",
     newText('')
     ,
     // Other native languages
-    newText('<div dir="rtl" style="font-family: David;">האם את/ה דובר/ת שפות נוספות ברמת שפת אם?</div>')
+    newText(formmater('האם את/ה דובר/ת שפות נוספות ברמת שפת אם?'))
         .cssContainer({"direction": "rtl"})
         .print()
     ,
-    newScale("input_native", '<div dir="rtl" style="font-family: David;">כן</div>', '<div dir="rtl" style="font-family: David;">לא</div>')
+    newScale("input_native", formmater('כן'), formmater('לא'))
         .radio()
         .labelsPosition("right")
         .log()
@@ -157,7 +154,7 @@ newTrial("participants",
     newText('')
     ,
     // Age
-    newText('<div dir="rtl" style="font-family: David;">מהו גילך?</div>')
+    newText(formmater('מהו גילך?'))
         .cssContainer({"direction": "rtl"})
         .print()
     ,
@@ -170,11 +167,11 @@ newTrial("participants",
      newText('')
     ,
     // Gender
-    newText('<div dir="rtl" style="font-family: David;">מה המין שלך?</div>')
+    newText(formmater('מה המין שלך?'))
         .cssContainer({"direction": "rtl"})
         .print()
     ,
-    newScale("input_gender",   '<div dir="rtl" style="font-family: David;">נקבה</div>', '<div dir="rtl" style="font-family: David;">זכר</div>', '<div dir="rtl" style="font-family: David;">אחר</div>')
+    newScale("input_gender",   formmater('נקבה'), formmater('זכר'), formmater('אחר'))
         .radio()
         .log()
         .cssContainer({"direction": "rtl"})
@@ -190,7 +187,7 @@ newTrial("participants",
     defaultText.color("Crimson").print()
     ,
     // Continue. Only validate a click when ID and age information is input properly
-    newButton("next", '<div style="font-family: David;"><strong>עבור להוראות הניסוי </strong></div>')
+    newButton("next", formmater('<strong>עבור להוראות הניסוי </strong>'))
         .cssContainer({"direction": "rtl", "margin-top":"1em"})
         .print()
         // Check for participant ID and age input
@@ -198,14 +195,14 @@ newTrial("participants",
              newFunction('dummy', ()=>true).test.is(true)
              // Age
             .and( getTextInput("input_age").test.text(/^\d+$/)
-                .failure( newText('errorage', '<div dir="rtl" style="font-family: David;">אנא כתוב/כתבי את גילך שנית.</div>'), 
+                .failure( newText('errorage', formmater('אנא כתוב/כתבי את גילך שנית.')), 
                           getTextInput("input_age").text("")))
              .and( getScale("input_hebrew").test.selected()
-                .failure( newText('errorHebrew', '<div dir="rtl" style="font-family: David;">אנא סמן/י האם עברית שפת אמך.</div>')))  
+                .failure( newText('errorHebrew', formmater('אנא סמן/י האם עברית שפת אמך.'))))
              .and( getScale("input_gender").test.selected()
-                .failure( newText('errorGender', '<div dir="rtl" style="font-family: David;">אנא סמן/י את מינך.</div>'))) 
+                .failure( newText('errorGender', formmater('אנא סמן/י את מינך.'))))
              .and( getScale("input_native").test.selected()
-                .failure( newText('errorNative', '<div dir="rtl" style="font-family: David;">אנא סמן/י האם אתה דובר/ת שפות אם נוספות.</div>'))) 
+                .failure( newText('errorNative', formmater('אנא סמן/י האם אתה דובר/ת שפות אם נוספות.'))))
         )
     ,
     // Store the texts from inputs into the Var elements
@@ -221,8 +218,8 @@ newTrial("instructions",
         .cssContainer({"margin":"1em"})
         .print()
         ,
-    newButton("go_to_exercise", '<div style="font-family: David;"><strong>התחל אימון</strong></div>')
-        .cssContainer({"margin":"1em"})
+    newButton("go_to_exercise", formmater('<strong>התחל אימון</strong>'))
+        .cssContainer({"direction": "rtl", "margin-top":"1em"})
         .print()
         .wait()
 );
@@ -244,10 +241,13 @@ Template("exercise.csv", row =>
 
 // Start experiment
 newTrial( "start_experiment" ,
-    newText("<h2>Jetzt beginnt der Hauptteil der Studie.</h2><div>Sie kriegen Feedback nur bei falscher Antwort.</div>")
+    newText('<h2 dir="rtl" style="font-family: David; text-align: center;">עכשיו נתחיל את החלק העיקרי של הניסוי</h2>')
+        .cssContainer({"direction": "rtl"})
+        .center()
         .print()
     ,
-    newButton("go_to_experiment", "Experiment starten")
+    newButton("go_to_experiment", formmater('<strong>התחל את הניסוי</strong>'))
+        .cssContainer({"direction": "rtl"})
         .print()
         .wait()
 );
@@ -282,7 +282,7 @@ newTrial("end",
     newText("So viel Prozent der Fragen haben Sie richtig beantwortet: ")
         .after(getText("accuracy"))
         .print()
-    ,
+    , 
     newHtml("explain", "end.html")
         .print()
     ,
