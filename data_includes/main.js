@@ -195,14 +195,14 @@ newTrial("participants",
              newFunction('dummy', ()=>true).test.is(true)
              // Age
             .and( getTextInput("input_age").test.text(/^\d+$/)
-                .failure( newText('errorage', formmater('אנא כתוב/כתבי את גילך שנית.')), 
+                .failure( newText('errorage', formmater('אנא כתוב/כתבי את גילך שנית.')).cssContainer({"direction": "rtl"}).print(), 
                           getTextInput("input_age").text("")))
              .and( getScale("input_hebrew").test.selected()
-                .failure( newText('errorHebrew', formmater('אנא סמן/י האם עברית שפת אמך.'))))
+                .failure( newText('errorHebrew', formmater('אנא סמן/י האם עברית שפת אמך.')).cssContainer({"direction": "rtl"}).print()))
              .and( getScale("input_gender").test.selected()
-                .failure( newText('errorGender', formmater('אנא סמן/י את מינך.'))))
+                .failure( newText('errorGender', formmater('אנא סמן/י את מינך.')).cssContainer({"direction": "rtl"}).print()))
              .and( getScale("input_native").test.selected()
-                .failure( newText('errorNative', formmater('אנא סמן/י האם אתה דובר/ת שפות אם נוספות.'))))
+                .failure( newText('errorNative', formmater('אנא סמן/י האם אתה דובר/ת שפות אם נוספות.')).cssContainer({"direction": "rtl"}).print()))
         )
     ,
     // Store the texts from inputs into the Var elements
@@ -271,20 +271,12 @@ Template("experiment.csv", row =>
 
 // Final screen: explanation of the goal
 newTrial("end",
-    newText("<div class='fancy'><h2>Vielen Dank für die Teilnahme an unserer Studie!</h2></div><div>Um Ihre Vergütung zu bekommen, schicken Sie bitte diesen persönlichen Code an die Versuchsleiterin: <div class='fancy'><em>".concat(voucher, "</em></div></div>"))
-        .cssContainer({"margin-top":"1em", "margin-bottom":"1em"})
+    newText("<div class='fancy';center;><h2>תודה על השתתפותך בניסוי!</h2></div>").center()
+        .cssContainer({"direction":"rtl", "margin-top":"1em", "margin-bottom":"1em"})
         .print()
     ,
-
     newVar("computedAccuracy").set(getVar("ACCURACY")).set(v=>Math.round(v.filter(a=>a===true).length/v.length*100)),
     newText("accuracy").text(getVar("computedAccuracy"))
-    ,
-    newText("So viel Prozent der Fragen haben Sie richtig beantwortet: ")
-        .after(getText("accuracy"))
-        .print()
-    , 
-    newHtml("explain", "end.html")
-        .print()
     ,
     // Trick: stay on this trial forever (until tab is closed)
     newButton().wait()
